@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#eff2ec">
+    <meta name="description" content="Android telefonkamerából OBS-forrás, saját szerver nélkül.">
+    <title>Telefonkamera → OBS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Kezdőlap">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>signal<span class="brand-light">room</span></span>
+      </a>
+      <span class="service-label"><span class="service-dot"></span> CAMERA LINK / OBS</span>
+    </header>
+
+    <main>
+      <section class="intro">
+        <div>
+          <p class="eyebrow">TELEFONKAMERA · OBS</p>
+          <h1>A telefonod képe.<br><span>Az OBS-edben.</span></h1>
+          <p class="intro-copy">Küldd át élőben az Android kameráját, és add hozzá az OBS-hez böngészőforrásként. Nem kell saját szervert futtatnod.</p>
+        </div>
+        <div class="privacy-note"><span aria-hidden="true">↗</span><p>Élő kapcsolat a VDO.Ninja szolgáltatáson keresztül. A linkeket kezeld privátként.</p></div>
+      </section>
+
+      <section class="studio" aria-label="Kamera kapcsolat beállítása">
+        <div class="preview-column">
+          <div class="section-heading">
+            <div><p class="eyebrow">KAPCSOLAT</p><h2>Élő előnézet</h2></div>
+            <button id="preview-toggle" class="icon-button" type="button" aria-label="Előnézet megnyitása" title="Előnézet megnyitása"><span aria-hidden="true">↗</span></button>
+          </div>
+          <div class="preview-frame">
+            <iframe id="preview" title="Telefonkamera élő előnézete" allow="autoplay; fullscreen" referrerpolicy="no-referrer" hidden></iframe>
+            <div id="preview-empty" class="preview-empty">
+              <span class="camera-icon" aria-hidden="true"><i></i></span>
+              <strong>Várakozás a telefonra</strong>
+              <span>Nyisd meg a küldőlinket, és indítsd el a kamerát.</span>
+            </div>
+            <span class="preview-tag"><i></i> ELŐNÉZET</span>
+          </div>
+          <p class="preview-footnote">Az előnézet betöltése külön gombbal indul, így a kapcsolatot csak akkor nyitjuk meg, amikor kéred.</p>
+        </div>
+
+        <div class="setup-column">
+          <div class="section-heading setup-title">
+            <div><p class="eyebrow">EGYEDI KAPCSOLAT</p><h2>Kapcsolati linkek</h2></div>
+            <button id="new-room" class="text-button" type="button" title="Új privát kapcsolat létrehozása">Új kapcsolat <span aria-hidden="true">↻</span></button>
+          </div>
+
+          <article class="link-panel phone-panel">
+            <div class="panel-heading"><span class="step-number">01</span><div><h3>Telefon · kamera küldése</h3><p>Nyisd meg ezt a linket az Androidon.</p></div></div>
+            <div class="link-row"><code id="phone-link"></code><button class="copy-button" data-copy="phone-link" type="button" aria-label="Telefonos link másolása" title="Link másolása">Másolás</button></div>
+            <div class="panel-actions">
+              <button id="share-phone" class="button button-primary" type="button"><span aria-hidden="true">↗</span> Link küldése a telefonra</button>
+              <a id="open-phone" class="button button-secondary" target="_blank" rel="noopener noreferrer">Megnyitás</a>
+            </div>
+          </article>
+
+          <article class="link-panel obs-panel">
+            <div class="panel-heading"><span class="step-number">02</span><div><h3>OBS · böngészőforrás</h3><p>Ezt a linket add meg az OBS Browser Source mezőjében.</p></div></div>
+            <div class="link-row"><code id="obs-link"></code><button class="copy-button" data-copy="obs-link" type="button" aria-label="OBS-link másolása" title="Link másolása">Másolás</button></div>
+            <div class="obs-details"><span>Javasolt méret</span><strong>1280 × 720</strong></div>
+          </article>
+
+          <ol class="quick-steps">
+            <li><span>1</span><p>A telefonon engedélyezd a kamera- és mikrofonhozzáférést.</p></li>
+            <li><span>2</span><p>Indítsd el a kamerát, majd az OBS-ben adj hozzá egy Browser Source-t.</p></li>
+          </ol>
+        </div>
+      </section>
+      <p id="toast" class="toast" role="status" aria-live="polite"></p>
+    </main>
+
+    <footer><span>SIGNALROOM / PHONE TO OBS</span><span>A kapcsolat végpontjai a VDO.Ninja-n keresztül kommunikálnak.</span></footer>
+  </body>
+</html>

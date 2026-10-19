@@ -6,11 +6,14 @@ let refreshTimer;
 let latestStatus;
 let previewPlayer;
 let previewSource;
+const apiBaseUrl = (window.APP_CONFIG?.apiBaseUrl || '').replace(/\/$/, '');
 
 async function api(url, options = {}) {
-  const response = await fetch(url, {
+  const headers = { 'Content-Type': 'application/json', ...options.headers };
+  const response = await fetch(`${apiBaseUrl}${url}`, {
     ...options,
-    headers: { 'Content-Type': 'application/json', ...options.headers },
+    credentials: 'include',
+    headers,
   });
   const data = await response.json().catch(() => ({}));
   if (response.status === 401 && url !== '/api/login') {

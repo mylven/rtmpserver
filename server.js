@@ -8,11 +8,18 @@ const app = express();
 const port = Number(process.env.PORT || 3000);
 const rtmpPort = Number(process.env.RTMP_PORT || 1935);
 const httpFlvPort = Number(process.env.HTTP_FLV_PORT || 8000);
+const dashboardOrigin = (process.env.DASHBOARD_ORIGIN || '').replace(/\/$/, '');
+const cookieSameSite = process.env.DASHBOARD_COOKIE_SAME_SITE || 'Strict';
+const httpFlvPublicUrl = (process.env.HTTP_FLV_PUBLIC_URL || '').replace(/\/$/, '');
 const dataDirectory = path.join(__dirname, 'data');
 const statePath = path.join(dataDirectory, 'state.json');
 const sessions = new Set();
 const loginAttempts = new Map();
 const dashboardPassword = process.env.DASHBOARD_PASSWORD || crypto.randomBytes(18).toString('base64url');
+
+if (!['Strict', 'Lax', 'None'].includes(cookieSameSite)) {
+  throw new Error('DASHBOARD_COOKIE_SAME_SITE must be Strict, Lax, or None.');
+}
 
 fs.mkdirSync(dataDirectory, { recursive: true });
 
@@ -111,6 +118,23 @@ function stopMediaServer() {
 }
 
 app.use(express.json({ limit: '10kb' }));
+app.use('/api', (request, response, next) => {
+  const origin = request.get('Origin');
+  if (dashboardOrigin && origin === dashboardOrigin) {
+    response.setHeader('Access-Control-Allow-Origin', dashboardOrigin);
+    response.setHeader('Access-Control-Allow-Credentials', 'true');
+    response.setHeader('Vary', 'Origin');
+  } else if (dashboardOrigin && origin) {
+    return response.status(403).json({ error: 'Ez a weboldal nem jogosult az API elérésére.' });
+  }
+
+  if (request.method === 'OPTIONS') {
+    response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    return response.sendStatus(204);
+  }
+  next();
+});
 app.get('/vendor/flv.min.js', (request, response) => {
   response.sendFile(path.join(__dirname, 'node_modules/flv.js/dist/flv.min.js'));
 });
@@ -141,14 +165,15 @@ app.post('/api/login', (request, response) => {
   loginAttempts.delete(address);
   const sessionId = crypto.randomBytes(32).toString('base64url');
   sessions.add(sessionId);
-  const secure = process.env.DASHBOARD_COOKIE_SECURE === 'true' ? '; Secure' : '';
-  response.setHeader('Set-Cookie', `rtmp_session=${sessionId}; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200${secure}`);
+  const secure = process.env.DASHBOARD_COOKIE_SECURE === 'true' || cookieSameSite === 'None' ? '; Secure' : '';
+  response.setHeader('Set-Cookie', `rtmp_session=${sessionId}; HttpOnly; SameSite=${cookieSameSite}; Path=/; Max-Age=43200${secure}`);
   response.json({ authenticated: true });
 });
 
 app.post('/api/logout', (request, response) => {
   sessions.delete(cookieValue(request, 'rtmp_session'));
-  response.setHeader('Set-Cookie', 'rtmp_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0');
+  const secure = process.env.DASHBOARD_COOKIE_SECURE === 'true' || cookieSameSite === 'None' ? '; Secure' : '';
+  response.setHeader('Set-Cookie', `rtmp_session=; HttpOnly; SameSite=${cookieSameSite}; Path=/; Max-Age=0${secure}`);
   response.json({ authenticated: false });
 });
 
@@ -165,7 +190,7 @@ app.get('/api/status', (request, response) => {
     publicHost: state.publicHost,
     streamKey: state.streamKey,
     serverUrl: state.publicHost ? `rtmp://${state.publicHost}:${rtmpPort}/live` : '',
-    previewUrl: `http://${state.publicHost || request.hostname}:${httpFlvPort}/live/${state.streamKey}.flv`,
+    previewUrl: `${httpFlvPublicUrl || `http://${state.publicHost || request.hostname}:${httpFlvPort}`}/live/${state.streamKey}.flv`,
   });
 });
 
