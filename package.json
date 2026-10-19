@@ -4,8 +4,7 @@
   "private": true,
   "description": "Webes kezelofelulet sajat RTMP stream szerverhez",
   "scripts": {
-    "start": "node server.js",
-    "build:pages": "node scripts/build-pages.js"
+    "start": "node server.js"
   },
   "engines": {
     "node": ">=20"

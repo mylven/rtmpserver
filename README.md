@@ -43,8 +43,8 @@ A Codespaces/webes fejlesztoi porttovabbitas nem garantal nyers TCP/RTMP elerest
 
 ## GitHub Pages
 
-Az `rtmpserver` GitHub Pages oldala egy statikus telefonkamera-eszkoz. A Pages workflow a `main` agra torteno push utan automatikusan telepiti, kulon backend URL vagy Actions valtozo nem szukseges.
+Az `rtmpserver` GitHub Pages oldala egy statikus telefonkamera-eszkoz. A repository Pages forrasa a `main` ag es a gyokerkonyvtar; push utan a GitHub automatikusan frissiti az oldalt. Kulon backend URL, Node szerver vagy Actions valtozo nem szukseges.
 
 Az oldalon generalj kulon kuldo- es OBS-linket. Nyisd meg a kuldo-linket az Android telefonon, engedelyezd a kamera- es mikrofonhozzaferest, majd az OBS-ben adj hozza egy Browser Source-t az OBS-linkkel. A kepet a VDO.Ninja tovabbitja; a telefon es az OBS kozotti eloben kozvetiteshez a sajat Node/RTMP szerver nem szukseges. A hivatkozast kezeld privatkent: aki megkapja az OBS-linket, megnezheti az adast.
 
-A Pages forrasat a repository `Settings > Pages` oldalan `GitHub Actions`-re kell allitani. A regi NodeMediaServer-es kezelopult tovabbra is helyben futtathato `npm start` paranccsal, de GitHub Pages nem futtat Node.js-t vagy RTMP-t.
+A regi NodeMediaServer-es kezelopult tovabbra is helyben futtathato `npm start` paranccsal, de GitHub Pages nem futtat Node.js-t vagy RTMP-t.
