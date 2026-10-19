@@ -1,0 +1,16 @@
+{
+  "name": "rtmp-control-room",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Webes kezelofelulet sajat RTMP stream szerverhez",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "node-media-server": "2.7.4"
+  }
+}
