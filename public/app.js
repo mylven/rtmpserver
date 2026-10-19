@@ -4,6 +4,8 @@ const toast = document.querySelector('#toast');
 let toastTimer;
 let refreshTimer;
 let latestStatus;
+let previewPlayer;
+let previewSource;
 
 async function api(url, options = {}) {
   const response = await fetch(url, {
@@ -47,6 +49,72 @@ function setDot(element, mode) {
   element.classList.toggle('live', mode === 'live');
 }
 
+function stopPreview(message) {
+  const video = document.querySelector('#stream-video');
+  if (previewPlayer) {
+    previewPlayer.pause();
+    previewPlayer.unload();
+    previewPlayer.detachMediaElement();
+    previewPlayer.destroy();
+    previewPlayer = null;
+  }
+  previewSource = null;
+  video.hidden = true;
+  video.removeAttribute('src');
+  video.load();
+  document.querySelector('#player-placeholder').hidden = false;
+  document.querySelector('#player-live-badge').hidden = true;
+  document.querySelector('#audio-toggle').disabled = true;
+  document.querySelector('#preview-status').textContent = message;
+  document.querySelector('#placeholder-title').textContent = message;
+  document.querySelector('#placeholder-detail').textContent = 'Amikor az adás elindul, itt jelenik meg a kép.';
+}
+
+function startPreview(status) {
+  if (!window.flvjs || !window.flvjs.isSupported()) {
+    stopPreview('A böngésző nem támogatja az élő lejátszást');
+    document.querySelector('#placeholder-detail').textContent = 'Próbáld meg egy Media Source Extensions-kompatibilis böngészőben.';
+    return;
+  }
+  if (previewPlayer && previewSource === status.previewUrl) return;
+  stopPreview('Kapcsolódás az adáshoz...');
+
+  const video = document.querySelector('#stream-video');
+  const player = window.flvjs.createPlayer({
+    type: 'flv',
+    url: status.previewUrl,
+    isLive: true,
+  }, {
+    enableStashBuffer: false,
+    stashInitialSize: 128,
+  });
+
+  previewPlayer = player;
+  previewSource = status.previewUrl;
+  video.hidden = false;
+  video.muted = true;
+  document.querySelector('#player-placeholder').hidden = true;
+  document.querySelector('#player-live-badge').hidden = false;
+  document.querySelector('#preview-status').textContent = 'Csatlakozás az adáshoz...';
+  document.querySelector('#audio-toggle').disabled = false;
+  document.querySelector('#audio-toggle').textContent = 'Hang bekapcsolása';
+
+  player.on(window.flvjs.Events.METADATA_ARRIVED, () => {
+    if (previewPlayer === player) document.querySelector('#preview-status').textContent = 'Élő kép érkezik';
+  });
+  player.on(window.flvjs.Events.ERROR, () => {
+    if (previewPlayer !== player) return;
+    stopPreview('Nem sikerült a lejátszás');
+    document.querySelector('#placeholder-detail').textContent = 'Ellenőrizd a HTTP-FLV port elérhetőségét, majd indítsd újra a streamet.';
+  });
+
+  player.attachMediaElement(video);
+  player.load();
+  player.play().catch(() => {
+    if (previewPlayer === player) document.querySelector('#preview-status').textContent = 'A lejátszáshoz kattints a videóra';
+  });
+}
+
 function renderStatus(status) {
   latestStatus = status;
   const mode = status.live ? 'live' : status.running ? 'online' : 'offline';
@@ -75,6 +143,9 @@ function renderStatus(status) {
   document.querySelector('#sidebar-status').textContent = status.running ? status.live ? 'Élő közvetítés' : 'Szerver aktív' : 'Szerver leállítva';
   setDot(document.querySelector('#health-dot'), mode);
   setDot(document.querySelector('#sidebar-status-dot'), mode);
+
+  if (status.live) startPreview(status);
+  else stopPreview(status.running ? 'Várakozás a közvetítésre' : 'Az RTMP-szerver le van állítva');
 }
 
 async function refreshStatus() {
@@ -144,6 +215,12 @@ document.querySelector('#rotate-key').addEventListener('click', async () => {
   } catch (error) {
     notify(error.message, true);
   }
+});
+
+document.querySelector('#audio-toggle').addEventListener('click', () => {
+  const video = document.querySelector('#stream-video');
+  video.muted = !video.muted;
+  document.querySelector('#audio-toggle').textContent = video.muted ? 'Hang bekapcsolása' : 'Hang némítása';
 });
 
 document.querySelectorAll('[data-copy]').forEach((button) => {

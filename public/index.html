@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css">
+    <script src="/vendor/flv.min.js" defer></script>
     <script src="/app.js" defer></script>
   </head>
   <body>
@@ -33,6 +34,7 @@
         </a>
         <div class="sidebar-label">KÖZVETÍTÉS</div>
         <a class="nav-link active" href="#overview"><span class="nav-dot"></span>Áttekintés</a>
+        <a class="nav-link" href="#preview"><span class="nav-dot"></span>Élő előnézet</a>
         <a class="nav-link" href="#connection"><span class="nav-dot"></span>Kapcsolat</a>
         <div class="sidebar-bottom">
           <div class="sidebar-indicator"><span id="sidebar-status-dot" class="status-dot"></span><span id="sidebar-status">Szerver leállítva</span></div>
@@ -70,6 +72,16 @@
             <article class="metric"><div class="metric-heading"><span>ADÁS ÁLLAPOTA</span><span id="live-indicator" class="live-indicator"><i></i> NINCS ADÁS</span></div><div id="metric-live" class="metric-value">Offline</div><p id="metric-live-note" class="metric-note">Várakozás a közvetítőre</p></article>
             <article class="metric"><div class="metric-heading"><span>BEÁLLÍTOTT HOST</span><span class="metric-symbol">↗</span></div><div id="metric-host" class="metric-value metric-host">Nincs megadva</div><p class="metric-note">Publikus DNS vagy IP-cím</p></article>
             <article class="metric"><div class="metric-heading"><span>KAPCSOLAT</span><span class="metric-symbol">⌁</span></div><div class="metric-value">RTMP</div><p class="metric-note">TCP · Port 1935</p></article>
+          </section>
+
+          <section id="preview" class="preview-section">
+            <div class="section-heading"><div><p class="eyebrow">VALÓS IDEJŰ KÉP</p><h2>Élő előnézet</h2></div><div class="preview-tools"><span id="preview-status" class="preview-status">Várakozás a közvetítésre</span><button id="audio-toggle" class="button button-secondary audio-toggle" type="button" disabled>Hang bekapcsolása</button></div></div>
+            <div class="player-frame">
+              <video id="stream-video" controls autoplay muted playsinline hidden></video>
+              <div id="player-placeholder" class="player-placeholder"><span class="placeholder-mark" aria-hidden="true">R</span><strong id="placeholder-title">Még nincs bejövő adás</strong><span id="placeholder-detail">Amikor az adás elindul, itt jelenik meg a kép.</span></div>
+              <span id="player-live-badge" class="player-live-badge" hidden><i></i> ÉLŐ</span>
+            </div>
+            <p class="player-caption">Böngészős előnézet HTTP-FLV kapcsolaton keresztül.</p>
           </section>
 
           <section id="connection" class="connection-section">

@@ -19,6 +19,7 @@ Kornyezeti valtozok:
 | --- | --- | --- |
 | `PORT` | `3000` | Webes dashboard portja |
 | `RTMP_PORT` | `1935` | RTMP port |
+| `HTTP_FLV_PORT` | `8000` | Böngészős HTTP-FLV lejátszó portja |
 | `DASHBOARD_PASSWORD` | Veletlenszeru inditaskor | Dashboard jelszava |
 | `PUBLIC_HOST` | Ures | A megjelenitett publikus DNS-nev vagy IP-cim |
 | `DASHBOARD_COOKIE_SECURE` | `false` | `true`, ha a dashboard HTTPS proxy mogott fut |
@@ -33,4 +34,6 @@ Az iranyitopulton add meg azt a publikus DNS-nevet vagy IPv4-cimet, amelyrol a s
 
 A webes felulet onmagaban nem teszi publikussa a szervert. Tavoli halozatrol valo RTMP-kapcsolathoz az alkalmazasnak folyamatosan futo, publikus IPv4-cimmel vagy DNS-nevvel rendelkezo gepen kell futnia. Otthoni gep eseten a routeren tovabbitsd a TCP `1935` portot erre a gepre, es engedelyezd ugyanezt a tuzfalon. CGNAT mogott a routeres porttovabbitas nem eleg; publikus IP-vel rendelkezo VPS-re vagy megfelelo TCP tunneling szolgaltatasra van szukseg.
 
-A Codespaces/webes fejlesztoi porttovabbitas nem garantal nyers TCP/RTMP elerest. Eles, internetrol elerheto hasznalathoz telepitsd VPS-re vagy sajat publikus szerverre, es allits be TLS-t a dashboard ele. A dashboardot ne tedd jelszo nelkul nyilvanossa.
+A dashboardon beluli böngészős előnézethez a HTTP-FLV portnak (alapértelmezetten `8000`) is elérhetőnek kell lennie. Az OBS-beállításhoz a `1935/tcp` portot használd; a webes lejátszáshoz a `8000/tcp` portot is nyisd meg.
+
+A Codespaces/webes fejlesztoi porttovabbitas nem garantal nyers TCP/RTMP elerest. Eles, internetrol elerheto hasznalathoz telepitsd VPS-re vagy sajat publikus szerverre, es allits be TLS-t a dashboard ele. HTTPS dashboard mellett a böngészős élő képhez a HTTP-FLV kimenetet is HTTPS proxy mögé kell tenni. A dashboardot ne tedd jelszo nelkul nyilvanossa.

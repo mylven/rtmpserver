@@ -88,6 +88,21 @@ button { cursor: pointer; }
 .metric-value { overflow: hidden; margin-top: 17px; font-size: 20px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
 .metric-host { font-family: var(--mono); font-size: 15px; }
 .metric-note { margin: 4px 0 0; color: #8b948c; font-size: 11px; }
+.preview-section { margin-bottom: 48px; }
+.preview-section .section-heading { align-items: center; }
+.preview-tools { display: flex; align-items: center; gap: 12px; }
+.preview-status { color: #737e74; font-family: var(--mono); font-size: 10px; }
+.audio-toggle { min-height: 34px; font-size: 10px; }
+.player-frame { position: relative; display: grid; width: 100%; aspect-ratio: 16 / 9; max-height: 620px; place-items: center; overflow: hidden; border: 1px solid #303a31; border-radius: 7px; background: #111713; }
+.player-frame video { display: block; width: 100%; height: 100%; object-fit: contain; background: #111713; }
+.player-frame video[hidden] { display: none; }
+.player-placeholder { display: flex; width: min(100%, 420px); align-items: center; flex-direction: column; gap: 10px; padding: 24px; color: #edf1e9; text-align: center; }
+.placeholder-mark { display: grid; width: 46px; height: 46px; margin-bottom: 8px; place-items: center; border: 1px solid #52604e; border-radius: 12px; color: var(--green); font-size: 18px; font-weight: 800; }
+.player-placeholder strong { font-size: 14px; }
+.player-placeholder > span:last-child { color: #a5afa3; font-size: 11px; line-height: 1.6; }
+.player-live-badge { position: absolute; top: 14px; left: 14px; display: flex; align-items: center; gap: 7px; padding: 6px 9px; border-radius: 3px; background: #c54d40; color: #fff; font-family: var(--mono); font-size: 9px; }
+.player-live-badge i { width: 6px; height: 6px; border-radius: 50%; background: white; animation: blink 1.5s ease infinite; }
+.player-caption { margin: 9px 0 0; color: #8b948c; font-size: 10px; }
 .section-heading { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 17px; }
 .section-heading .eyebrow { margin-bottom: 6px; }
 .section-heading h2 { margin: 0; font-size: 20px; }
@@ -167,6 +182,11 @@ button { cursor: pointer; }
   .metric-host { font-size: 13px; }
   .metric-note { grid-column: 2; grid-row: 1 / span 2; min-height: 0; margin: 0; text-align: right; }
   .section-heading h2 { font-size: 18px; }
+  .preview-section { margin-bottom: 36px; }
+  .preview-section .section-heading { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .preview-tools { width: 100%; justify-content: space-between; }
+  .preview-status { font-size: 9px; }
+  .player-frame { aspect-ratio: 4 / 3; }
   .connection-grid { grid-template-columns: 1fr; }
   .connection-card { padding: 17px; }
   .card-description { min-height: 0; }

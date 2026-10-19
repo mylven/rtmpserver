@@ -7,6 +7,7 @@ const NodeMediaServer = require('node-media-server');
 const app = express();
 const port = Number(process.env.PORT || 3000);
 const rtmpPort = Number(process.env.RTMP_PORT || 1935);
+const httpFlvPort = Number(process.env.HTTP_FLV_PORT || 8000);
 const dataDirectory = path.join(__dirname, 'data');
 const statePath = path.join(dataDirectory, 'state.json');
 const sessions = new Set();
@@ -71,6 +72,10 @@ function createMediaServer() {
       ping: 30,
       ping_timeout: 60,
     },
+    http: {
+      port: httpFlvPort,
+      allow_origin: '*',
+    },
   });
 
   mediaServer.on('prePublish', (id, streamPath) => {
@@ -106,6 +111,9 @@ function stopMediaServer() {
 }
 
 app.use(express.json({ limit: '10kb' }));
+app.get('/vendor/flv.min.js', (request, response) => {
+  response.sendFile(path.join(__dirname, 'node_modules/flv.js/dist/flv.min.js'));
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/session', (request, response) => {
@@ -153,9 +161,11 @@ app.get('/api/status', (request, response) => {
     startedAt: state.startedAt,
     lastError: state.lastError,
     rtmpPort,
+    httpFlvPort,
     publicHost: state.publicHost,
     streamKey: state.streamKey,
     serverUrl: state.publicHost ? `rtmp://${state.publicHost}:${rtmpPort}/live` : '',
+    previewUrl: `http://${state.publicHost || request.hostname}:${httpFlvPort}/live/${state.streamKey}.flv`,
   });
 });
 
